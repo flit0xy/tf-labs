@@ -6,13 +6,13 @@ provider "azurerm" {
 module "rg-prod" {
   source              = "./modules/resource_group"
   resource_group_name = "rg-prod"
-  location            = "westeurope"
+  location            = "northeurope"
 }
 
 module "rg-dev" {
   source              = "./modules/resource_group"
   resource_group_name = "rg-dev"
-  location            = "eastus"
+  location            = "northeurope"
 }
 module "networking-prod" {
   source              = "./modules/vnet"
@@ -29,4 +29,28 @@ module "subnet-prod" {
   location            = module.rg-prod.location
   resource_group_name = module.rg-prod.name
   vnet_name           = module.networking-prod.vnet_name
+}
+
+module "nsg" {
+  source              = "./modules/nsg"
+  nsg_name            = "nsg-prod"
+  location            = module.rg-prod.location
+  resource_group_name = module.rg-prod.name
+}
+
+resource "azurerm_subnet_network_security_group_association" "nsg_association" {
+  subnet_id                 = module.subnet-prod.subnet_id
+  network_security_group_id = module.nsg.nsg_id
+
+}
+module "linux_vm" {
+  source               = "./modules/linux_vm"
+  vm_name              = "linux-vm-prod"
+  location             = module.rg-prod.location
+  resource_group_name  = module.rg-prod.name
+  admin_username       = "azureuser"
+  admin_ssh_key = file("C:/Users/Walid/.ssh/id_rsa.pub")
+  vm_size              = "Standard_D2s_v3"
+  subnet_id            = module.subnet-prod.subnet_id
+  network_interface_id = module.linux_vm.network_interface_id
 }
