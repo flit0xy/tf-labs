@@ -49,7 +49,7 @@ module "linux_vm" {
   location             = module.rg-prod.location
   resource_group_name  = module.rg-prod.name
   admin_username       = "azureuser"
-  admin_ssh_key = file("C:/Users/Walid/.ssh/id_rsa.pub")
+  admin_ssh_key        = file("C:/Users/Walid/.ssh/id_rsa.pub")
   vm_size              = "Standard_D2s_v3"
   subnet_id            = module.subnet-prod.subnet_id
   network_interface_id = module.linux_vm.network_interface_id
@@ -65,4 +65,16 @@ module "webapp-prod" {
     "ENVIRONMENT" = "PRODUCTION"
     "VERSION"     = "1.0.0"
   }
+}
+module "container_app" {
+  source                       = "./modules/container_app"
+  location                     = module.rg-prod.location
+  resource_group_name          = module.rg-prod.name
+  container_app_name           = "container-app-prod"
+  container_app_environment_id = module.container_app.container_app_env
+  container_name               = "mycontainer"
+  container_image              = "nginx:latest"
+  cpu                          = "0.5"
+  memory                       = "1.0Gi"
+  environment                  = "PRODUCTION"
 }
