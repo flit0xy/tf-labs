@@ -54,3 +54,15 @@ module "linux_vm" {
   subnet_id            = module.subnet-prod.subnet_id
   network_interface_id = module.linux_vm.network_interface_id
 }
+module "webapp-prod" {
+  source              = "./modules/webapp"
+  web_app_name        = "webapp-prod-12345"
+  location            = module.rg-prod.location
+  resource_group_name = module.rg-prod.name
+  service_plan_id     = module.webapp-prod.service_plan_id
+  service_plan_name   = "asp-prod"
+  app_settings = {
+    "ENVIRONMENT" = "PRODUCTION"
+    "VERSION"     = "1.0.0"
+  }
+}
