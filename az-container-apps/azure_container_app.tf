@@ -1,27 +1,29 @@
-data "azurerm_resource_group" "dzik-rg" {
-  name = "1-dea61712-playground-sandbox"
+module "dzik-rg" {
+  source = "../modules/resource_group"
+  resource_group_name = "dzik-rg"
+  location = "eastus"
 }
 
 module "dzik-acr" {
   source                  = "../modules/container_registry"
   container_registry_name = "dzikacr"
-  location                = data.azurerm_resource_group.dzik-rg.location
-  resource_group_name     = data.azurerm_resource_group.dzik-rg.name
+  location                = module.dzik-rg.location
+  resource_group_name     = module.dzik-rg.name
 
 
 }
 module "dzik-cae" {
   source              = "../modules/container_app_env"
   container_app_name  = "dzik-cae"
-  location            = data.azurerm_resource_group.dzik-rg.location
-  resource_group_name = data.azurerm_resource_group.dzik-rg.name
+  location            = module.dzik-rg.location
+  resource_group_name = module.dzik-rg.name
 }
 
 module "dzik-ca" {
   source                       = "../modules/container_app"
   container_app_name           = "dzik-ca"
-  location                     = data.azurerm_resource_group.dzik-rg.location
-  resource_group_name          = data.azurerm_resource_group.dzik-rg.name
+  location                     = module.dzik-rg.location
+  resource_group_name          = module.dzik-rg.name
   container_name               = "dzik-container"
   container_image              = "nginx:latest"
   cpu                          = "0.25"
