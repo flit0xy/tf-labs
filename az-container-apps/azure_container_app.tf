@@ -1,7 +1,7 @@
 module "dzik-rg" {
-  source = "../modules/resource_group"
+  source              = "../modules/resource_group"
   resource_group_name = "dzik-rg"
-  location = "eastus"
+  location            = "eastus"
 }
 
 module "dzik-acr" {
