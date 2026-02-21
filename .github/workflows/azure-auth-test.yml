@@ -34,12 +34,12 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./test
+        working-directory: ./az-container-apps
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
-        working-directory: ./test
+        working-directory: ./az-container-apps
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        working-directory: ./test
+        working-directory: ./az-container-apps
